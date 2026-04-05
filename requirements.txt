@@ -1,0 +1,9 @@
+uvicorn
+fastapi[standard]
+fastapi-structured-logging
+aiohttp
+aiofiles
+lxml
+aiopath
+load_dotenv
+python-dotenv

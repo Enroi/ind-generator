@@ -1,0 +1,11 @@
+<statement-request date-from="2020-11-11" date-to="2020-12-12" document_type="a">
+    <account number="40702810000000022222">
+        <bank bic="044545454" name="ПАО БАНК"/>
+    </account>
+    <account number="40702810000000033333">
+        <bank bic="044545454" name="ПАО БАНК"/>
+    </account>
+    <account number="40702810000000044444">
+        <bank bic="044545454" name="ПАО БАНК"/>
+    </account>
+</statement-request>

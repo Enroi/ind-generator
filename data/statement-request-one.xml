@@ -1,5 +1,5 @@
 <statement-request date-from="2025-11-11" date-to="2025-12-12" document_type="a">
     <account number="40702812222222222222">
-        <bank bic="045678901" name="ПАО БАНК"/>
+        <bank bic="045678901" name="БАНК 1"/>
     </account>
 </statement-request>

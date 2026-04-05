@@ -51,17 +51,6 @@ async def work_with_generation(generate_files_count: int, results: list[Any]):
     logger.info(message_created)
 
 
-async def send_one_file(semaphore: Semaphore, session: aiohttp.client.ClientSession, file):
-    async with semaphore:
-        async with aiofiles.open(file, 'r', encoding = 'utf-8') as file:
-            file_content = await file.read()
-        async with session.post(
-                url = os.getenv("URL_FOR_SEND_FILE"),
-                data = file_content,
-        ) as resp:
-            await resp.read()
-
-
 async def send_files():
     files_dirty = await aiofiles.os.scandir("temps")
     files = [file for file in files_dirty if
@@ -77,17 +66,36 @@ async def send_files():
         return len(results)
 
 
-async def save_one_file(current_generated_file_index: int, xml_string: str, semaphore: Semaphore):
+async def send_one_file(semaphore: Semaphore, session: aiohttp.client.ClientSession, file):
     async with semaphore:
-        filename = f'temps/accounts_oner_{current_generated_file_index}.xml'
-        async with aiofiles.open(filename, 'w', encoding = 'utf-8') as out_file:
-            await out_file.write(xml_string)
+        async with aiofiles.open(file, 'r', encoding = 'utf-8') as file:
+            file_content = await file.read()
+        async with session.post(
+                url = os.getenv("URL_FOR_SEND_FILE"),
+                data = file_content,
+        ) as resp:
+            await resp.read()
 
 
 async def generate_files(generate_files_count: int) -> int:
     xml_request_root, yaml_accounts = await prepare_configs()
     results = await generation_worker(generate_files_count, xml_request_root, yaml_accounts)
     return len(results)
+
+
+async def prepare_configs() -> tuple[Any, Any]:
+    async def load_xml():
+        async with aiofiles.open('data/statement-request-one.xml', 'r', encoding = 'utf-8') as f:
+            return await f.read()
+
+    async def load_yaml():
+        async with aiofiles.open('data/accounts.yml', 'r', encoding = 'utf-8') as f:
+            return await f.read()
+
+    xml_content, accounts_content = await asyncio.gather(load_xml(), load_yaml())
+    xml_request_root = etree.fromstring(xml_content.encode('utf-8'))
+    yaml_accounts = yaml.safe_load(accounts_content)
+    return xml_request_root, yaml_accounts
 
 
 async def generation_worker(generate_files_count: int, xml_request_root, yaml_accounts) -> list[Any]:
@@ -109,16 +117,8 @@ async def generation_worker(generate_files_count: int, xml_request_root, yaml_ac
     return results
 
 
-async def prepare_configs() -> tuple[Any, Any]:
-    async def load_xml():
-        async with aiofiles.open('data/statement-request-one.xml', 'r', encoding = 'utf-8') as f:
-            return await f.read()
-
-    async def load_yaml():
-        async with aiofiles.open('data/accounts.yml', 'r', encoding = 'utf-8') as f:
-            return await f.read()
-
-    xml_content, accounts_content = await asyncio.gather(load_xml(), load_yaml())
-    xml_request_root = etree.fromstring(xml_content.encode('utf-8'))
-    yaml_accounts = yaml.safe_load(accounts_content)
-    return xml_request_root, yaml_accounts
+async def save_one_file(current_generated_file_index: int, xml_string: str, semaphore: Semaphore):
+    async with semaphore:
+        filename = f'temps/accounts_oner_{current_generated_file_index}.xml'
+        async with aiofiles.open(filename, 'w', encoding = 'utf-8') as out_file:
+            await out_file.write(xml_string)

@@ -7,3 +7,5 @@ lxml
 aiopath
 load_dotenv
 python-dotenv
+pyyaml
+cryptography

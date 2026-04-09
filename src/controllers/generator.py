@@ -1,9 +1,12 @@
 import asyncio
+import base64
 from asyncio import Semaphore
 import os
 import time
 
 import aiohttp
+from cryptography.hazmat.primitives import serialization, hashes
+from cryptography.hazmat.primitives.asymmetric import rsa, padding
 from dotenv import load_dotenv
 
 from lxml import etree
@@ -68,11 +71,27 @@ async def send_files():
 
 async def send_one_file(semaphore: Semaphore, session: aiohttp.client.ClientSession, file):
     async with semaphore:
-        async with aiofiles.open(file, 'r', encoding = 'utf-8') as file:
+        async with aiofiles.open(file, 'rb') as file:
             file_content = await file.read()
+        async with aiofiles.open(file = os.getenv("PEM_FILE"), mode = 'rb') as file:
+            private_key = serialization.load_pem_private_key(
+                await file.read(),
+                password = None,
+            )
+        if not isinstance(private_key, rsa.RSAPrivateKey):
+            raise RuntimeError(f"Файл {os.getenv("PEM_FILE")} не может быть распознан как хранилище закрытого ключа")
+        signature = private_key.sign(
+            file_content,
+            padding.PKCS1v15(),
+            hashes.SHA256()
+        )
         async with session.post(
                 url = os.getenv("URL_FOR_SEND_FILE"),
                 data = file_content,
+                headers = {
+                    "Certificate-name": "certificate 1",
+                    "Message-hash": base64.b64encode(signature).decode('ascii')
+                }
         ) as resp:
             await resp.read()
 

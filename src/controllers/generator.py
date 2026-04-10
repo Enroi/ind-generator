@@ -85,15 +85,28 @@ async def send_one_file(semaphore: Semaphore, session: aiohttp.client.ClientSess
             padding.PKCS1v15(),
             hashes.SHA256()
         )
-        async with session.post(
-                url = os.getenv("URL_FOR_SEND_FILE"),
-                data = file_content,
-                headers = {
-                    "Certificate-name": "certificate 1",
-                    "Message-hash": base64.b64encode(signature).decode('ascii')
-                }
-        ) as resp:
-            await resp.read()
+        i: int = 0
+        while i < 3:
+            async with session.post(
+                    url = os.getenv("URL_FOR_SEND_FILE"),
+                    data = file_content,
+                    headers = {
+                        "Certificate-name": "certificate 1",
+                        "Message-hash": base64.b64encode(signature).decode('ascii')
+                    }
+            ) as resp:
+                resp.raise_for_status()
+                match resp.status:
+                    case 403:
+                        raise RuntimeError("Ошибка авторизации")
+                    case 200:
+                        answer = await resp.read()
+                        logger.info(f"Ответ: {answer}")
+                        i = 9_999_999
+                    case 202:
+                        logger.info("Запрос в процессе обработки")
+                        await asyncio.sleep(1)
+                        i += 1
 
 
 async def generate_files(generate_files_count: int) -> int:

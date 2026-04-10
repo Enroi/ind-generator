@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<statement-response xmlns="urn:cbr-ru:statement:v1.0"
+                    generated-at="2025-12-13T09:34:21+03:00"
+                    document_type="a">
+
+    <!-- Информация о банке отправителе -->
+    <bank-info>
+        <bic>045678901</bic>
+        <name>БАНК 1</name>
+        <corr-account>30101810100000000901</corr-account>
+    </bank-info>
+
+    <!-- Данные запрошенного счета -->
+    <account-info>
+        <number>40702810000000022222</number>
+        <currency>RUB</currency>
+        <owner>
+            <name>ОБЩЕСТВО С ОГРАНИЧЕННОЙ ОТВЕТСТВЕННОСТЬЮ "РОМАШКА"</name>
+            <inn>7701234567</inn>
+            <kpp>770101001</kpp>
+        </owner>
+        <status>АКТИВЕН</status>
+    </account-info>
+
+    <!-- Период выписки -->
+    <period>
+        <date-from>2025-11-11</date-from>
+        <date-to>2025-12-12</date-to>
+    </period>
+
+    <!-- Остатки на начало и конец периода -->
+    <balances>
+        <opening-balance date="2025-11-10">250000.00</opening-balance>
+        <closing-balance date="2025-12-12">315540.50</closing-balance>
+        <total-debit-turnover>127800.00</total-debit-turnover>
+        <total-credit-turnover>193340.50</total-credit-turnover>
+    </balances>
+
+    <!-- Список операций (выписка) -->
+    <transactions>
+
+        <transaction id="trn-001">
+            <date>2025-11-15</date>
+            <posting-date>2025-11-15</posting-date>
+            <document-number>1801</document-number>
+            <operation-type>ПОСТУПЛЕНИЕ ТОВАРНОЙ ВЫРУЧКИ</operation-type>
+            <amount>56000.50</amount>
+            <debit-credit>CREDIT</debit-credit>
+            <correspondent>
+                <name>ООО "ТОРГОВЫЙ ДОМ"</name>
+                <inn>7712345678</inn>
+                <account>40702810500000001234</account>
+                <bank-bic>044525225</bank-bic>
+                <bank-name>СБЕРБАНК</bank-name>
+            </correspondent>
+            <payment-purpose>Оплата за оборудование по сч. № 45 от 10.11.2025, в т.ч. НДС 20% - 9333.42</payment-purpose>
+            <transaction-code>01</transaction-code>
+        </transaction>
+
+        <transaction id="trn-002">
+            <date>2025-11-22</date>
+            <posting-date>2025-11-22</posting-date>
+            <document-number>912</document-number>
+            <operation-type>ПЛАТЕЖНОЕ ПОРУЧЕНИЕ (СПИСАНИЕ)</operation-type>
+            <amount>127800.00</amount>
+            <debit-credit>DEBIT</debit-credit>
+            <correspondent>
+                <name>ООО "СКЛАД-СЕРВИС"</name>
+                <inn>5023456789</inn>
+                <account>40702810700000009876</account>
+                <bank-bic>045678901</bank-bic>
+                <bank-name>БАНК 1</bank-name>
+            </correspondent>
+            <payment-purpose>Аренда складских помещений за ноябрь 2025 по дог. №78/А, НДС не облагается</payment-purpose>
+            <transaction-code>01</transaction-code>
+        </transaction>
+
+        <transaction id="trn-003">
+            <date>2025-12-05</date>
+            <posting-date>2025-12-05</posting-date>
+            <document-number>2314</document-number>
+            <operation-type>ПОСТУПЛЕНИЕ ПО ДОГОВОРУ ЗАЙМА</operation-type>
+            <amount>137340.00</amount>
+            <debit-credit>CREDIT</debit-credit>
+            <correspondent>
+                <name>ИП Иванов Иван Иванович</name>
+                <inn>500100732259</inn>
+                <account>40802810200000001111</account>
+                <bank-bic>045678901</bank-bic>
+                <bank-name>БАНК 1</bank-name>
+            </correspondent>
+            <payment-purpose>Предоставление займа по договору №12 от 01.12.2025</payment-purpose>
+            <transaction-code>01</transaction-code>
+        </transaction>
+
+    </transactions>
+</statement-response>

@@ -5,7 +5,7 @@ from fastapi import FastAPI
 from fastapi.responses import RedirectResponse
 import fastapi_structured_logging
 
-from controllers import generator as generator_controller
+from controllers import generator as generator_controller, process_tester as processes_controller
 
 
 log_level = os.getenv("LOG_LEVEL","INFO")
@@ -34,6 +34,7 @@ async def root():
     return "/docs"
 
 app.include_router(generator_controller.router)
+app.include_router(processes_controller.router)
 
 if __name__ == '__main__':
     port = os.getenv("FAST_API_PORT", 8000)
